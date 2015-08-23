@@ -11,12 +11,12 @@ use PDO;
 
 class SelectUrls
 {
-    const DSN = 'mysql:dbname=zoond_make;host=217.12.201.205';
-    const USER = 'zoond_make_r';
-    const PASSWORD = 'makewear12';
-//    const DSN = 'mysql:dbname=makewear;host=127.0.0.1';
-//    const USER = 'root';
-//    const PASSWORD = '123123q';
+//    const DSN = 'mysql:dbname=zoond_make;host=217.12.201.205';
+//    const USER = 'zoond_make_r';
+//    const PASSWORD = 'makewear12';
+    const DSN = 'mysql:dbname=makewear;host=127.0.0.1';
+    const USER = 'root';
+    const PASSWORD = '123123q';
     const MSG_SUCCESS = "Не отображать!";
     const MSG_NOT_SUCCESS = "Не удалось скрить товaр!";
     const MSG_SUCC_SIZE = "Размер обновился!";

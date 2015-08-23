@@ -34,6 +34,7 @@ class Cardo
     private $begin;
     private $end;
     public $updated = false;
+    public $hide = 0;
     public $count;
     public $result = '';
     public $step;
@@ -98,6 +99,10 @@ class Cardo
         }
     }
 
+    /***
+     * Checks or is running chromedriver on computer.
+     * @throws \Nearsoft\SeleniumClient\Exceptions\InvalidSelector
+     */
     private function checkSeleniumServer() {
         $this->driver->get(self::GOOGLE);
         $webCheck = $this->driver->findElements(By::id(self::ID_CHECK));
@@ -120,7 +125,13 @@ class Cardo
             return false;
         }
     }
-//in this function 2 times checks visibiliti INPUT because was bugs!!!!!!!!
+
+    /***
+     * in this function 2 times checks visibiliti INPUT because was bugs!!!!!!!!
+     * @param $webOption
+     * @return array
+     * @throws \Nearsoft\SeleniumClient\Exceptions\InvalidSelector
+     */
     private function getQuantity($webOption)
     {
         $item = array();
@@ -155,7 +166,7 @@ class Cardo
     public function getAllItems()
     {
         foreach ($this->urls as $id => $url) {
-//            if ($id < 11105) continue;
+            if ($id < 12105) continue;
             $this->updated = false;
             $this->result = '';
             $sizes = $this->getAllSizes($url);
@@ -198,6 +209,7 @@ class Cardo
                     $result = $this->connectDb->hideItem($id);
                     $this->showHide($result);
                     $this->updated = true;
+                    $this->hide++;
                 } else {
                     echo "<h1>Error, cant find sizes!</h1>";
                     exit;
@@ -208,8 +220,7 @@ class Cardo
             $this->showInfo($id, $url);
             $this->step = $this->getStep($url);
             $this->connectDb->setInterface($this->count, $this->step, $this->updated, $this->result);
-//            if ($id > 12000)
-//                break;
+//            if ($id > 12000) break;
         }
         $this->end = new \DateTime('now');
         return $this->allItems;
@@ -296,6 +307,7 @@ class Cardo
 
     public function showDuration()
     {
+        $hide = $this->hide;
         $count = $this->step;
         $seconds = $this->end->diff($this->begin)->s;
         $minutes = $this->end->diff($this->begin)->i;
@@ -306,6 +318,7 @@ class Cardo
         $this->result = <<<FFFFFF
 Всeго товарoв прoeeрено - $count<br>
 Обновлено - $updated<br>
+Скрыто - $hide<br>
 Начало парсинга - $begin<br>
 Окончание парсинга - $end<br>
 Длительность парсинга - $hours:$minutes:$seconds.
