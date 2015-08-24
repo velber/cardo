@@ -101,6 +101,10 @@ class Cardo
         }
     }
 
+    /***
+     * Checks or is running chromedriver on computer.
+     * @throws \Nearsoft\SeleniumClient\Exceptions\InvalidSelector
+     */
     private function checkSeleniumServer()
     {
         $this->driver->get(self::GOOGLE);
@@ -126,14 +130,19 @@ class Cardo
         }
     }
 
-//in this function 2 times checks visibiliti INPUT because was bugs!!!!!!!!
+    /***
+     * in this function 2 times checks visibiliti INPUT because was bugs!!!!!!!!
+     * @param $webOption
+     * @return array
+     * @throws \Nearsoft\SeleniumClient\Exceptions\InvalidSelector
+     */
     private function getQuantity($webOption)
     {
         $item = array();
         $item[] = $webOption->getAttribute("title");
         $item['quantity'] = 0;
         $this->select->selectByPartialText($webOption->getText());
-        usleep(500000);
+        sleep(1);
         $check = $this->driver->findElements(By::id(self::ID_INPUT))[0];
         if (!$check->isDisplayed()) {
             sleep(1);
@@ -240,7 +249,7 @@ class Cardo
                 $this->showUpdateSize($result);
             }
         } else {
-            echo "РАЗМЕР - ПУСТАЯ СТРОКА!";
+              echo "РАЗМЕР - ПУСТАЯ СТРОКА!";
 //            $result = $this->connectDb->hideItem($id);
 //            $this->showHide($result);
         }
