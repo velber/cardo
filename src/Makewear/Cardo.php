@@ -34,75 +34,76 @@ class Cardo
     private $begin;
     private $end;
     public $updated = false;
-    public $hide = 0;
     public $count;
     public $result = '';
+    public $hide = 0;
     public $step;
     public $login = false;
 
     public function __construct($connectDb)
     {
         $this->begin = new \DateTime('now');
-        $capabilities = new DesiredCapabilities('chrome');
+        $capabilities = new DesiredCapabilities('firefox');
         $this->driver = new WebDriver($capabilities);
         $this->checkSeleniumServer();
         $this->connectDb = $connectDb;
         $this->urls = $this->connectDb->getUrls();
         $this->count = count($this->urls);
         $this->logIn();
-//        $this->urls = [
-//            11151 => "http://cardo-ua.com/ubki/810-ubka-zoom-rozy-vesna2015.html"
+    //    $this->urls = [
+//        1519 => "http://cardo-ua.com/platya/571-plate-sofia-powder-beige.html",
+//        1520 => "http://cardo-ua.com/platya/572-plate-sofia-malina.html",
+      //  1660 => "http://cardo-ua.com/trikotaj/553-kofta-granda-violet.html",
+      //  1667 => "http://cardo-ua.com/trikotaj/576-kofta-golden-zipp-chocolate.html"
 //];
-   /**
-    * Login.
-    * Sets $this->login true if login was success.
-    **/
-    }
-    private function logIn()
-    {
-        $this->driver->get("http://cardo-ua.com/authentication?back=my-account.php");
-        $emails = $this->driver->findElements(By::id('email'));
-        $pwds = $this->driver->findElements(By::id('passwd'));
-        $submits = $this->driver->findElements(By::id('SubmitLogin'));
-        if (count($emails) > 0 && count($pwds) > 0 && count($submits) > 0) {
-            $email = $emails[0];
-            $email->sendKeys('v.chupovsky@makewear.com.ua');
-            $pwd = $pwds[0];
-            $pwd->sendKeys('qqqqqqqqq');
-            $submit = $submits[0];
-            $submit->click();
-        }
-        sleep(3);
-        $this->driver->getCookies();
-        $names = $this->driver->findElementsByXPath('//div[@id="header_user_info"]/span/a');
-        $name = $names[0];
-        if (count($names) > 0) {
-            if (strpos($name->getText(), 'лоди')) {
-                $this->login = true;
-                echo "login";
-            } else {
-                echo "not login";
-            }
-        }
+
     }
 
-    /**
-     * Get opt price.
-     * @return string.
-     **/
-    private function getOptPrice() {
-        $prices = $this->driver->findElementsByXPath("//span[@id='our_price_display']");
-        if (count($prices) > 0) {
-            $price = $prices[0];
-            preg_match('/\d+/', $price->getText(), $matches);
-            return $matches[0];
+/**
+* Login.
+* Sets $this->login true if login was success.
+**/
+private function logIn()
+{
+    $this->driver->get("http://cardo-ua.com/authentication?back=my-account.php");
+    $emails = $this->driver->findElements(By::id('email'));
+    $pwds = $this->driver->findElements(By::id('passwd'));
+    $submits = $this->driver->findElements(By::id('SubmitLogin'));
+    if (count($emails) > 0 && count($pwds) > 0 && count($submits) > 0) {
+        $email = $emails[0];
+        $email->sendKeys('v.chupovsky@makewear.com.ua');
+        $pwd = $pwds[0];
+        $pwd->sendKeys('qqqqqqqqq');
+        $submit = $submits[0];
+        $submit->click();
+    }
+    sleep(3);
+    $this->driver->getCookies();
+    $names = $this->driver->findElementsByXPath('//div[@id="header_user_info"]/span/a');
+    $name = $names[0];
+    if (count($names) > 0) {
+        if (strpos($name->getText(), 'лоди')) {
+            $this->login = true;
+            echo "login";
+        } else {
+            echo "not login";
         }
     }
+}
 
-    /***
-     * Checks or is running chromedriver on computer.
-     * @throws \Nearsoft\SeleniumClient\Exceptions\InvalidSelector
-     */
+/**
+ * Get opt price.
+ * @return string.
+ **/
+private function getOptPrice() {
+    $prices = $this->driver->findElementsByXPath("//span[@id='our_price_display']");
+    if (count($prices) > 0) {
+        $price = $prices[0];
+        preg_match('/\d+/', $price->getText(), $matches);
+        return $matches[0];
+    }
+}
+
     private function checkSeleniumServer() {
         $this->driver->get(self::GOOGLE);
         $webCheck = $this->driver->findElements(By::id(self::ID_CHECK));
@@ -117,6 +118,7 @@ class Cardo
     public function getAllSizes($url)
     {
         $this->driver->get($url);
+        usleep(500000);
         $webSelect = $this->driver->findElements(By::id(self::ID_SELECT));
         if (count($webSelect) > 0) {
             $this->select = new SelectElement($this->driver->findElementById(self::ID_SELECT));
@@ -125,20 +127,14 @@ class Cardo
             return false;
         }
     }
-
-    /***
-     * in this function 2 times checks visibiliti INPUT because was bugs!!!!!!!!
-     * @param $webOption
-     * @return array
-     * @throws \Nearsoft\SeleniumClient\Exceptions\InvalidSelector
-     */
+//in this function 2 times checks visibiliti INPUT because was bugs!!!!!!!!
     private function getQuantity($webOption)
     {
         $item = array();
         $item[] = $webOption->getAttribute("title");
         $item['quantity'] = 0;
         $this->select->selectByPartialText($webOption->getText());
-        sleep(1);
+        usleep(500000);
         $check = $this->driver->findElements(By::id(self::ID_INPUT))[0];
         if (!$check->isDisplayed()) {
             sleep(1);
@@ -166,7 +162,7 @@ class Cardo
     public function getAllItems()
     {
         foreach ($this->urls as $id => $url) {
-            if ($id < 12105) continue;
+       //    if ($id < 1702) continue;
             $this->updated = false;
             $this->result = '';
             $sizes = $this->getAllSizes($url);
@@ -193,18 +189,18 @@ class Cardo
                     }
                 }
                 $this->updateSizes($id, $available);
-                $this->showUpdateSize($priceOpt);
-                if ($this->login) {
-                    if (!$this->connectDb->checkActualOptPrices($id, $priceOpt)) {
-                        $result = $this->connectDb->updateOptPrice($id, $priceOpt);
-                        if ($result) {
-                            $this->updated = true;
-                            $this->showUpdateSize('Опт. цена обновилась!');
-                        }
-                    }
-                }
+$this->showUpdateSize($priceOpt);
+if ($this->login) {
+   if (!$this->connectDb->checkActualOptPrices($id, $priceOpt)) {
+       $result = $this->connectDb->updateOptPrice($id, $priceOpt);
+       if ($result) {
+           $this->updated = true;
+           $this->showUpdateSize('Опт. цена обновилась!');
+       }
+   }
+}
             } else {
-                if ($this->findSaled()) {
+                   if ($this->findSaled()) {
                     $available = null;
                     $result = $this->connectDb->hideItem($id);
                     $this->showHide($result);
@@ -214,13 +210,14 @@ class Cardo
                     echo "<h1>Error, cant find sizes!</h1>";
                     exit;
                 }
-
             }
             $this->allItems[$id] = $available;
-            $this->showInfo($id, $url);
+            $this->showInfo($id, $url); 
             $this->step = $this->getStep($url);
             $this->connectDb->setInterface($this->count, $this->step, $this->updated, $this->result);
-//            if ($id > 12000) break;
+
+             //  if ($id > 2000)
+               //   break;
         }
         $this->end = new \DateTime('now');
         return $this->allItems;
@@ -237,7 +234,7 @@ class Cardo
         }
         echo "<br>Размери - ".$sizes;
         if (strlen($sizes) > 0) {
-            $sizes = substr($sizes, 0, strlen($sizes)- 1);
+              $sizes = substr($sizes, 0, strlen($sizes)- 1);
             if ($this->connectDb->checkActualSizes($id, $sizes)) {
                 $this->showActualSizes();
             } else {
@@ -245,13 +242,14 @@ class Cardo
                 $this->updated = true;
                 $this->showUpdateSize($result);
             }
+
+
         } else {
               echo "РАЗМЕР - ПУСТАЯ СТРОКА!";
 //            $result = $this->connectDb->hideItem($id);
 //            $this->showHide($result);
         }
     }
-
     private function findSaled() {
         $webProdano = $this->driver->findElements(By::xPath('//span[@class="prodano"]'));
         if (count($webProdano) > 0) {
@@ -260,7 +258,6 @@ class Cardo
             return false;
         }
     }
-
     public function getStep($url)
     {
         $stepId = array_search($url, $this->urls);
@@ -271,14 +268,13 @@ class Cardo
     public function showHide($hide)
     {
         echo "<font color = 'red'>".$hide."</font>";
-        $this->result = "<font color = 'red'>".$hide."</font>";
+        $this->result .= "<font color = 'red'>".$hide."</font>";
     }
 
     public function showUpdateSize($updateSize)
     {
         echo $updateSize."<br>";
         $this->result .= $updateSize."<br>";
-
     }
 
     private function showStep()
@@ -290,41 +286,40 @@ class Cardo
     {
         echo $sizeName." - ".$result."<br>";
         $this->result .= $sizeName." - ".$result."<br>";
-
     }
 
     private function showInfo($id, $url)
     {
-        echo "ID = ".$id."<br>URL = ".$url."<hr>";
-        $this->result .= "ID = ".$id."<br>URL = ".$url."<hr>";
+       echo "ID = ".$id."<br>URL = <a href='".$url."'>".$url."</a><hr>";
+        $this->result .= "ID = ".$id."<br>URL = <a href='".$url."'>".$url."</a><hr>";
     }
 
     private function showActualSizes()
     {
         echo "Размери актуальн!<br>";
         $this->result .= "Размери актуальн!<br>";
-    }
+}    
 
-    public function showDuration()
+public function showDuration()
     {
-        $hide = $this->hide;
         $count = $this->step;
+        $hide = $this->hide;
         $seconds = $this->end->diff($this->begin)->s;
         $minutes = $this->end->diff($this->begin)->i;
         $hours = $this->end->diff($this->begin)->h;
-        $begin = $this->begin->format('Y-m-d H:i:s');
-        $end = $this->end->format('Y-m-d H:i:s');
+        $begin = $this->begin->format('d-m-Y H:i:s');
+        $end = $this->end->format('d-m-Y H:i:s');
         $updated = $this->connectDb->getUpdated();
         $this->result = <<<FFFFFF
 Всeго товарoв прoeeрено - $count<br>
 Обновлено - $updated<br>
-Скрыто - $hide<br>
+В том числе скрито - $hide <br>
 Начало парсинга - $begin<br>
 Окончание парсинга - $end<br>
 Длительность парсинга - $hours:$minutes:$seconds.
 
 FFFFFF;
-        $this->connectDb->setInterfaceComplete($this->result);
+        $this->connectDb->setInterfaceComplete($this->result, $end);
         echo $this->result;
     }
 }
