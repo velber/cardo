@@ -14,6 +14,9 @@ class SelectUrls
     const DSN = 'mysql:dbname=zoond_make;host=217.12.201.205';
     const USER = 'zoond_make_r';
     const PASSWORD = 'makewear12';
+//    const DSN = 'mysql:dbname=makewear;host=127.0.0.1';
+//    const USER = 'root';
+//    const PASSWORD = '123123q';
     const MSG_SUCCESS = "Не отображать!";
     const MSG_NOT_SUCCESS = "Не удалось скрить товaр!";
     const MSG_SUCC_SIZE = "Размер обновился!";
@@ -76,12 +79,12 @@ WHERE `commodity_ID` = $id";
         if ($stmt > 0) {
             return self::MSG_SUCC_SIZE;
         } else {
-$this->dbh = new \PDO(self::DSN, self::USER, self::PASSWORD);
+            $this->dbh = new \PDO(self::DSN, self::USER, self::PASSWORD);
             return self::MSG_NOT_SUCC_SIZE;
         }
     }
 
-    public function addQuantity ($id, $size, $quantity)
+    public function addQuantity($id, $size, $quantity)
     {
         $size = $this->dbh->quote($size);
         $sql = "INSERT INTO `shop_cardo_sizes`(`commodity_id`, `size`, `quantity`)
@@ -90,13 +93,14 @@ VALUES ($id, $size, $quantity)";
         if ($stmt > 0) {
             return self::MSG_SUCC_QUANT;
         } else {
-             $this->dbh = new \PDO(self::DSN, self::USER, self::PASSWORD);
-             return self::MSG_NOT_SUCC_QUANT;
+            $this->dbh = new \PDO(self::DSN, self::USER, self::PASSWORD);
+            return self::MSG_NOT_SUCC_QUANT;
         }
     }
 
-    public function updateQuantity ($id, $size, $quantity) {
- $size = $this->dbh->quote($size);
+    public function updateQuantity($id, $size, $quantity)
+    {
+        $size = $this->dbh->quote($size);
         $sql = "UPDATE `shop_cardo_sizes` SET `quantity`=$quantity WHERE `commodity_id` = $id  AND `size` = $size";
         $stmt = $this->dbh->exec($sql);
         if ($stmt > 0) {
@@ -108,19 +112,21 @@ VALUES ($id, $size, $quantity)";
         }
     }
 
-    public function getAllQuantity () {
+    public function getAllQuantity()
+    {
         $sql = "SELECT 	commodity_id, size, quantity
 FROM  `shop_cardo_sizes` ";
         $stmt = $this->dbh->query($sql);
-        $sizes =array();
+        $sizes = array();
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $sizes[] = $row;
         }
         return $sizes;
     }
+
     /**
      * Check if exist size in database
-     * @param Int $id, String $name of size
+     * @param Int $id , String $name of size
      * @return false or array
      **/
     public function checkExistSize($id, $size)
@@ -145,7 +151,7 @@ FROM  `shop_cardo_sizes` ";
         }
     }
 
-    public function checkActualSizes ($id, $sizes)
+    public function checkActualSizes($id, $sizes)
     {
         if ($this->allSizes[$id] == $sizes) {
             return true;
@@ -156,16 +162,16 @@ FROM  `shop_cardo_sizes` ";
 
     public function setInterface($count, $step, $updated, $result)
     {
-        echo $step."up";
-        echo $count."cou";
-        $a=$count/100;
-        $a2=round($step/$a, 2);
+        echo $step . "up";
+        echo $count . "cou";
+        $a = $count / 100;
+        $a2 = round($step / $a, 2);
         $andSql = '';
         if ($step == 1) {
-            $andSql .=', `update_add`=0';
+            $andSql .= ', `update_add`=0';
         }
         if ($updated) {
-            $andSql .=', `update_add`=`update_add`+1';
+            $andSql .= ', `update_add`=`update_add`+1';
         }
         $result = $this->dbh->quote($result);
         $sql = "
@@ -180,14 +186,15 @@ UPDATE `parser_interface`
             echo "Not Good";
         }
     }
+
     public function setInterfaceComplete($result, $today)
     {
-    $sql = "
+        $sql = "
 UPDATE `parser_interface`
 SET `text`='{$result}', `update_date`='{$today}'
 WHERE `par_id`='5'";
-    $this->dbh->query('SET names utf8');
-    $this->dbh->exec($sql);
+        $this->dbh->query('SET names utf8');
+        $this->dbh->exec($sql);
     }
 
     public function getUpdated()
@@ -204,28 +211,25 @@ WHERE `par_id`='5'";
         }
     }
 
-public function updateOptPrice($id, $price)
-{
-   $price = $this->dbh->quote($price);
-   $sql = "UPDATE `shop_commodity` SET `commodity_price2` = $price WHERE `commodity_ID` = $id";
-   $stmt = $this->dbh->exec($sql);
-   if ($stmt > 0) {
-       return true;
-   } else {
-       return false;
-   }
-}
+    public function updateOptPrice($id, $price)
+    {
+        $price = $this->dbh->quote($price);
+        $sql = "UPDATE `shop_commodity` SET `commodity_price2` = $price WHERE `commodity_ID` = $id";
+        $stmt = $this->dbh->exec($sql);
+        if ($stmt > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
-public function checkActualOptPrices ($id, $price)
-{
-   if ($this->allOptPrices[$id] == $price) {
-       return true;
-   } else {
-       return false;
-   }
-}
-
-
-
+    public function checkActualOptPrices($id, $price)
+    {
+        if ($this->allOptPrices[$id] == $price) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
 

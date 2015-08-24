@@ -50,61 +50,63 @@ class Cardo
         $this->urls = $this->connectDb->getUrls();
         $this->count = count($this->urls);
         $this->logIn();
-    //    $this->urls = [
+        //    $this->urls = [
 //        1519 => "http://cardo-ua.com/platya/571-plate-sofia-powder-beige.html",
 //        1520 => "http://cardo-ua.com/platya/572-plate-sofia-malina.html",
-      //  1660 => "http://cardo-ua.com/trikotaj/553-kofta-granda-violet.html",
-      //  1667 => "http://cardo-ua.com/trikotaj/576-kofta-golden-zipp-chocolate.html"
+        //  1660 => "http://cardo-ua.com/trikotaj/553-kofta-granda-violet.html",
+        //  1667 => "http://cardo-ua.com/trikotaj/576-kofta-golden-zipp-chocolate.html"
 //];
 
     }
 
-/**
-* Login.
-* Sets $this->login true if login was success.
-**/
-private function logIn()
-{
-    $this->driver->get("http://cardo-ua.com/authentication?back=my-account.php");
-    $emails = $this->driver->findElements(By::id('email'));
-    $pwds = $this->driver->findElements(By::id('passwd'));
-    $submits = $this->driver->findElements(By::id('SubmitLogin'));
-    if (count($emails) > 0 && count($pwds) > 0 && count($submits) > 0) {
-        $email = $emails[0];
-        $email->sendKeys('v.chupovsky@makewear.com.ua');
-        $pwd = $pwds[0];
-        $pwd->sendKeys('qqqqqqqqq');
-        $submit = $submits[0];
-        $submit->click();
-    }
-    sleep(3);
-    $this->driver->getCookies();
-    $names = $this->driver->findElementsByXPath('//div[@id="header_user_info"]/span/a');
-    $name = $names[0];
-    if (count($names) > 0) {
-        if (strpos($name->getText(), 'лоди')) {
-            $this->login = true;
-            echo "login";
-        } else {
-            echo "not login";
+    /**
+     * Login.
+     * Sets $this->login true if login was success.
+     **/
+    private function logIn()
+    {
+        $this->driver->get("http://cardo-ua.com/authentication?back=my-account.php");
+        $emails = $this->driver->findElements(By::id('email'));
+        $pwds = $this->driver->findElements(By::id('passwd'));
+        $submits = $this->driver->findElements(By::id('SubmitLogin'));
+        if (count($emails) > 0 && count($pwds) > 0 && count($submits) > 0) {
+            $email = $emails[0];
+            $email->sendKeys('v.chupovsky@makewear.com.ua');
+            $pwd = $pwds[0];
+            $pwd->sendKeys('qqqqqqqqq');
+            $submit = $submits[0];
+            $submit->click();
+        }
+        sleep(3);
+        $this->driver->getCookies();
+        $names = $this->driver->findElementsByXPath('//div[@id="header_user_info"]/span/a');
+        $name = $names[0];
+        if (count($names) > 0) {
+            if (strpos($name->getText(), 'лоди')) {
+                $this->login = true;
+                echo "login";
+            } else {
+                echo "not login";
+            }
         }
     }
-}
 
-/**
- * Get opt price.
- * @return string.
- **/
-private function getOptPrice() {
-    $prices = $this->driver->findElementsByXPath("//span[@id='our_price_display']");
-    if (count($prices) > 0) {
-        $price = $prices[0];
-        preg_match('/\d+/', $price->getText(), $matches);
-        return $matches[0];
+    /**
+     * Get opt price.
+     * @return string.
+     **/
+    private function getOptPrice()
+    {
+        $prices = $this->driver->findElementsByXPath("//span[@id='our_price_display']");
+        if (count($prices) > 0) {
+            $price = $prices[0];
+            preg_match('/\d+/', $price->getText(), $matches);
+            return $matches[0];
+        }
     }
-}
 
-    private function checkSeleniumServer() {
+    private function checkSeleniumServer()
+    {
         $this->driver->get(self::GOOGLE);
         $webCheck = $this->driver->findElements(By::id(self::ID_CHECK));
         if (count($webCheck) > 0) {
@@ -127,6 +129,7 @@ private function getOptPrice() {
             return false;
         }
     }
+
 //in this function 2 times checks visibiliti INPUT because was bugs!!!!!!!!
     private function getQuantity($webOption)
     {
@@ -162,7 +165,7 @@ private function getOptPrice() {
     public function getAllItems()
     {
         foreach ($this->urls as $id => $url) {
-       //    if ($id < 1702) continue;
+            if ($id < 15550) continue;
             $this->updated = false;
             $this->result = '';
             $sizes = $this->getAllSizes($url);
@@ -189,18 +192,18 @@ private function getOptPrice() {
                     }
                 }
                 $this->updateSizes($id, $available);
-$this->showUpdateSize($priceOpt);
-if ($this->login) {
-   if (!$this->connectDb->checkActualOptPrices($id, $priceOpt)) {
-       $result = $this->connectDb->updateOptPrice($id, $priceOpt);
-       if ($result) {
-           $this->updated = true;
-           $this->showUpdateSize('Опт. цена обновилась!');
-       }
-   }
-}
+                $this->showUpdateSize($priceOpt);
+                if ($this->login) {
+                    if (!$this->connectDb->checkActualOptPrices($id, $priceOpt)) {
+                        $result = $this->connectDb->updateOptPrice($id, $priceOpt);
+                        if ($result) {
+                            $this->updated = true;
+                            $this->showUpdateSize('Опт. цена обновилась!');
+                        }
+                    }
+                }
             } else {
-                   if ($this->findSaled()) {
+                if ($this->findSaled()) {
                     $available = null;
                     $result = $this->connectDb->hideItem($id);
                     $this->showHide($result);
@@ -212,12 +215,10 @@ if ($this->login) {
                 }
             }
             $this->allItems[$id] = $available;
-            $this->showInfo($id, $url); 
+            $this->showInfo($id, $url);
             $this->step = $this->getStep($url);
             $this->connectDb->setInterface($this->count, $this->step, $this->updated, $this->result);
-
-             //  if ($id > 2000)
-               //   break;
+//            if ($id > 2000) break;
         }
         $this->end = new \DateTime('now');
         return $this->allItems;
@@ -229,12 +230,12 @@ if ($this->login) {
         $sizes = '';
         foreach ($available as $size => $quantity) {
             if ($quantity > 0) {
-                $sizes .= $size.';';
+                $sizes .= $size . ';';
             }
         }
-        echo "<br>Размери - ".$sizes;
+        echo "<br>Размери - " . $sizes;
         if (strlen($sizes) > 0) {
-              $sizes = substr($sizes, 0, strlen($sizes)- 1);
+            $sizes = substr($sizes, 0, strlen($sizes) - 1);
             if ($this->connectDb->checkActualSizes($id, $sizes)) {
                 $this->showActualSizes();
             } else {
@@ -245,12 +246,14 @@ if ($this->login) {
 
 
         } else {
-              echo "РАЗМЕР - ПУСТАЯ СТРОКА!";
+            echo "РАЗМЕР - ПУСТАЯ СТРОКА!";
 //            $result = $this->connectDb->hideItem($id);
 //            $this->showHide($result);
         }
     }
-    private function findSaled() {
+
+    private function findSaled()
+    {
         $webProdano = $this->driver->findElements(By::xPath('//span[@class="prodano"]'));
         if (count($webProdano) > 0) {
             return true;
@@ -258,6 +261,7 @@ if ($this->login) {
             return false;
         }
     }
+
     public function getStep($url)
     {
         $stepId = array_search($url, $this->urls);
@@ -267,40 +271,40 @@ if ($this->login) {
 
     public function showHide($hide)
     {
-        echo "<font color = 'red'>".$hide."</font>";
-        $this->result .= "<font color = 'red'>".$hide."</font>";
+        echo "<font color = 'red'>" . $hide . "</font>";
+        $this->result .= "<font color = 'red'>" . $hide . "</font>";
     }
 
     public function showUpdateSize($updateSize)
     {
-        echo $updateSize."<br>";
-        $this->result .= $updateSize."<br>";
+        echo $updateSize . "<br>";
+        $this->result .= $updateSize . "<br>";
     }
 
     private function showStep()
     {
-        echo "<font color = 'blue'>STEP - ".(count($this->allItems)+1)."</font><br>";
+        echo "<font color = 'blue'>STEP - " . (count($this->allItems) + 1) . "</font><br>";
     }
 
     private function showAddUpdateQuantity($sizeName, $result)
     {
-        echo $sizeName." - ".$result."<br>";
-        $this->result .= $sizeName." - ".$result."<br>";
+        echo $sizeName . " - " . $result . "<br>";
+        $this->result .= $sizeName . " - " . $result . "<br>";
     }
 
     private function showInfo($id, $url)
     {
-       echo "ID = ".$id."<br>URL = <a href='".$url."'>".$url."</a><hr>";
-        $this->result .= "ID = ".$id."<br>URL = <a href='".$url."'>".$url."</a><hr>";
+        echo "ID = " . $id . "<br>URL = <a href='" . $url . "'>" . $url . "</a><hr>";
+        $this->result .= "ID = " . $id . "<br>URL = <a href='" . $url . "'>" . $url . "</a><hr>";
     }
 
     private function showActualSizes()
     {
         echo "Размери актуальн!<br>";
         $this->result .= "Размери актуальн!<br>";
-}    
+    }
 
-public function showDuration()
+    public function showDuration()
     {
         $count = $this->step;
         $hide = $this->hide;
