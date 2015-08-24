@@ -50,13 +50,9 @@ class Cardo
         $this->urls = $this->connectDb->getUrls();
         $this->count = count($this->urls);
         $this->logIn();
-        //    $this->urls = [
-//        1519 => "http://cardo-ua.com/platya/571-plate-sofia-powder-beige.html",
-//        1520 => "http://cardo-ua.com/platya/572-plate-sofia-malina.html",
-        //  1660 => "http://cardo-ua.com/trikotaj/553-kofta-granda-violet.html",
-        //  1667 => "http://cardo-ua.com/trikotaj/576-kofta-golden-zipp-chocolate.html"
-//];
-
+//        $this->urls = [
+//            1519 => "http://cardo-ua.com/platya/571-plate-sofia-powder-beige.html"
+//        ];
     }
 
     /**
@@ -165,7 +161,7 @@ class Cardo
     public function getAllItems()
     {
         foreach ($this->urls as $id => $url) {
-            if ($id < 15550) continue;
+//            if ($id < 15550) continue;
             $this->updated = false;
             $this->result = '';
             $sizes = $this->getAllSizes($url);
@@ -243,8 +239,6 @@ class Cardo
                 $this->updated = true;
                 $this->showUpdateSize($result);
             }
-
-
         } else {
             echo "РАЗМЕР - ПУСТАЯ СТРОКА!";
 //            $result = $this->connectDb->hideItem($id);
