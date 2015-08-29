@@ -227,7 +227,7 @@ class Cardo
             $this->showInfo($id, $url);
             $this->step = $this->getStep($url);
             $this->connectDb->setInterface($this->count, $this->step, $this->updated, $this->result);
-            if ($id > 1419) break;
+//            if ($id > 1419) break;
         }
         $this->end = new \DateTime('now');
         return $this->allItems;
