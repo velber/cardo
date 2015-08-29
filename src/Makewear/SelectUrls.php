@@ -162,8 +162,8 @@ FROM  `shop_cardo_sizes` ";
 
     public function setInterface($count, $step, $updated, $result)
     {
-        echo $step . "up";
-        echo $count . "cou";
+//        echo $step . "up";
+//        echo $count . "cou";
         $a = $count / 100;
         $a2 = round($step / $a, 2);
         $andSql = '';
@@ -181,7 +181,7 @@ UPDATE `parser_interface`
         $this->dbh->query('SET names utf8');
         $stmt = $this->dbh->exec($sql);
         if ($stmt > 0) {
-            echo "Good";
+//            echo "Good";
         } else {
             echo "Not Good";
         }

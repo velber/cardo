@@ -51,7 +51,7 @@ class Cardo
         $this->count = count($this->urls);
         $this->logIn();
 //        $this->urls = [
-//            1519 => "http://cardo-ua.com/platya/571-plate-sofia-powder-beige.html"
+//            5939 => "http://cardo-ua.com/platya/942-plate-milan-butterfly-vesna-leto-2015.html"
 //        ];
     }
 
@@ -170,7 +170,8 @@ class Cardo
     public function getAllItems()
     {
         foreach ($this->urls as $id => $url) {
-//            if ($id < 15550) continue;
+//            if ($id < 5000) continue;
+//            if (!$this->connectDb->checkActualOptPrices($id, '0')) continue; // якщо злетіли оптові ціни, і рівні "0".
             $this->updated = false;
             $this->result = '';
             $sizes = $this->getAllSizes($url);
@@ -197,14 +198,17 @@ class Cardo
                     }
                 }
                 $this->updateSizes($id, $available);
-                $this->showUpdateSize($priceOpt);
                 if ($this->login) {
-                    if (!$this->connectDb->checkActualOptPrices($id, $priceOpt)) {
+                    if (!$this->connectDb->checkActualOptPrices($id, $priceOpt) && $priceOpt != 0) {
                         $result = $this->connectDb->updateOptPrice($id, $priceOpt);
                         if ($result) {
                             $this->updated = true;
-                            $this->showUpdateSize('Опт. цена обновилась!');
+                            $this->showUpdateSize("Цена = ".$priceOpt.' - обновилась!');
+                        } else {
+                            $this->showUpdateSize("Цена = ".$priceOpt.' - не обновилась!');
                         }
+                    } else {
+                        $this->showUpdateSize("Цена = ".$priceOpt.' - актуальна.');
                     }
                 }
             } else {
@@ -215,15 +219,15 @@ class Cardo
                     $this->updated = true;
                     $this->hide++;
                 } else {
-                    echo "<h1>Error, cant find sizes!</h1>";
-                    exit;
+                    echo "<h1>Error, cant find sizes on Cardo HTML page!</h1>";
+                    continue;
                 }
             }
             $this->allItems[$id] = $available;
             $this->showInfo($id, $url);
             $this->step = $this->getStep($url);
             $this->connectDb->setInterface($this->count, $this->step, $this->updated, $this->result);
-//            if ($id > 2000) break;
+            if ($id > 1419) break;
         }
         $this->end = new \DateTime('now');
         return $this->allItems;
@@ -231,14 +235,14 @@ class Cardo
 
     public function updateSizes($id, $available)
     {
-        var_dump($available);
+//        var_dump($available);
         $sizes = '';
         foreach ($available as $size => $quantity) {
             if ($quantity > 0) {
                 $sizes .= $size . ';';
             }
         }
-        echo "<br>Размери - " . $sizes;
+        echo "Размери = " . $sizes;
         if (strlen($sizes) > 0) {
             $sizes = substr($sizes, 0, strlen($sizes) - 1);
             if ($this->connectDb->checkActualSizes($id, $sizes)) {
@@ -297,14 +301,14 @@ class Cardo
 
     private function showInfo($id, $url)
     {
-        echo "ID = " . $id . "<br>URL = <a href='" . $url . "'>" . $url . "</a><hr>";
-        $this->result .= "ID = " . $id . "<br>URL = <a href='" . $url . "'>" . $url . "</a><hr>";
+        echo "ID = " . $id . "<br>URL = <a href='" . $url . "' target = '_blank'>" . $url . "</a><hr>";
+        $this->result .= "ID = " . $id . "<br>URL = <a href='" . $url . "' target = '_blank'>" . $url . "</a><hr>";
     }
 
     private function showActualSizes()
     {
-        echo "Размери актуальн!<br>";
-        $this->result .= "Размери актуальн!<br>";
+        echo " - Размери актуальн!<br>";
+        $this->result .= " - Размери актуальн!<br>";
     }
 
     public function showDuration()
