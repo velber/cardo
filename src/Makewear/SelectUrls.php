@@ -162,8 +162,8 @@ FROM  `shop_cardo_sizes` ";
 
     public function setInterface($count, $step, $updated, $result)
     {
-//        echo $step . "up";
-//        echo $count . "cou";
+        echo $step . "up";
+        echo $count . "cou";
         $a = $count / 100;
         $a2 = round($step / $a, 2);
         $andSql = '';
