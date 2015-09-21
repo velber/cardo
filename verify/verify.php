@@ -119,15 +119,7 @@ if ($count > 0)
     setInterface($_SESSION['parser_id'], $count, $step, $result[0], $result[1]);
     $request_url = "verify.php?step={$step2}";
     if ($step == $count) {
-        unset($_SESSION["links11"]);
-        $id = $_SESSION['parser_id'];
-        $request_url = "verify_start.php?id={$id}";
-        echo "<script>setTimeout('ddddd();', 200);
-					function ddddd()
-					{
-						location.href='{$request_url}';
-					}
-					</script>";
+        echo 'end!';
     } else {
         echo "<script>setTimeout('ddddd();', 700);
 					function ddddd()
