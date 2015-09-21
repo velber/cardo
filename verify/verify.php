@@ -7,23 +7,15 @@
  */
 session_start();
 header('Content-Type: text/html; charset=utf-8');
-$request_url=$_SERVER['REQUEST_URI'];
 ini_set("max_execution_time", "99999");
 set_time_limit(99999);
-error_reporting(E_ALL^E_NOTICE);
-require_once ('simple_html_dom.php');
-//require_once ("../phpexcel/Classes/PHPExcel.php");
-require_once ("gettover.php");
-$_SESSION["cat_id"]=$_SESSION["cat_id"]?$_SESSION["cat_id"]:$cat_id;
+error_reporting(E_ALL ^ E_DEPRECATED ^ E_NOTICE);
 
-function read_excel($filepath){
-    $ar=array();
-    $inputFileType = PHPExcel_IOFactory::identify($filepath);
-    $objReader = PHPExcel_IOFactory::createReader($inputFileType);
-    $objPHPExcel = $objReader->load($filepath);
-    $ar = $objPHPExcel->getActiveSheet()->toArray();
-    return $ar;
-}
+require_once ('simple_html_dom.php');
+require_once ("gettover.php");
+$_SESSION["cat_id"] = 46;
+$request_url=$_SERVER['REQUEST_URI'];
+
 
 function ucfirst_mb($str) {
     $u='utf-8';
@@ -71,6 +63,7 @@ function flfashion($urll){
 
     return $urll;
 }
+
 function setInterface($iddd, $count, $step, $result, $updated)
 {
    $a=$count/100;

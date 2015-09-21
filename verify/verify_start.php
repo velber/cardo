@@ -1,14 +1,17 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: volodini
  * Date: 7/2/15
  * Time: 12:56 PM
  */
+
 ini_set('display_errors', 'on');
-error_reporting(E_ERROR | E_WARNING);
-mysql_connect('217.12.201.205', 'zoond_make_r', 'makewear12') or die ('no connect');
-mysql_select_db('zoond_make');
+error_reporting(E_ALL ^ E_DEPRECATED ^ E_NOTICE);
+
+$connect = mysql_connect('217.12.201.205', 'zoond_make_r', 'makewear12') or die ('no connect');
+mysql_select_db('zoond_make', $connect);
 //$connect = mysql_connect('localhost', 'root', '123123q') or die ('no connect');
 //mysql_select_db('makewear', $connect);
 $query = "
@@ -19,7 +22,6 @@ $result = mysql_query($query);
 if (mysql_num_rows($result) > 0)
 {
     $categories="";
-
 for($i=1;$i<=mysql_num_rows($result);$i++)
     {
         $row = mysql_fetch_object($result);
@@ -39,11 +41,9 @@ for($i=1;$i<=mysql_num_rows($result);$i++)
         $url=$row->url;
         $from=$row->from;
         $to=$row->to;
-//        require("admin.parser.line.php");
-  //      $all_lines.=$all_line;
     }
 } else {
-echo "SQL Error!";
+    echo "SQL Error!";
 }
 $date=date("Y");
 $query = "

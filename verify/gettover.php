@@ -350,6 +350,7 @@ function gettover($new_url, $count2)
         $query = "UPDATE `shop_commodity` SET `com_sizes`='{$selSize}',`select_color`=''  WHERE  `from_url`='{$new_url}';";
         mysql_query($query) or die("Error select2");
     }
+
     if ($selColSize != "") {
         echo "SizeColor: <br>" . $selColSize;
         $query = "UPDATE `shop_commodity` SET `select_color`='{$selColSize}'  WHERE  `from_url`='{$new_url}';";
@@ -367,12 +368,7 @@ function gettover($new_url, $count2)
             }
         }
     }
-
-
-    usleep(200000);
-    if ($_SESSION["cat_id"] == 42) {
         sleep(1);
-    }
     echo "<hr>";
     $content = ob_get_contents();
     file_put_contents($_SESSION['filename'], $content, FILE_APPEND);
