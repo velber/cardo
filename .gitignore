@@ -5,5 +5,5 @@
 /*.buildpath
 /*.settings
 cache/
-verify/
+#verify/
 /SeleniumServer/
