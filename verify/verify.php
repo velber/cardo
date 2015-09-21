@@ -38,34 +38,6 @@ function get_http_error($theurl) {
         return substr($head[0],9,3);
     }
 }
-function ggg($id)
-{
-    $sql="
-	SELECT * FROM `shop_filters-values`
-	INNER JOIN `shop_filters-lists` ON `id`=`ticket_value`
-	WHERE `ticket_id`='{$id}';";
-    $res=mysql_query($sql);
-    while($row=mysql_fetch_assoc($res))
-    {
-        $lines.="- ".$row["list_name"]."<br>";
-    }
-    return $lines;
-}
-function gggColSize($id,$a)
-{
-    $sql="
-	SELECT * FROM `shop_filters-values`
-	INNER JOIN `shop_filters-lists` ON `id`=`ticket_value`
-	WHERE `ticket_id`='{$id}';";
-    $res=mysql_query($sql);
-    while($row=mysql_fetch_assoc($res))
-    {
-        if($row["list_filterid"]==$a)
-            $lines.=$row["list_name"]."|";
-    }
-    return $lines;
-}
-
 //-----Baner url FlFashion--------------
 function flfashion($urll){
     $d=0;
