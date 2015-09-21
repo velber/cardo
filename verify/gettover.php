@@ -114,17 +114,6 @@ function gettover($new_url, $count2)
     echo "Order: " . $order . "<br/>";
 //==========Cod=====================================
     $cod = $html->find($_SESSION["cod"], 0)->plaintext;
-    if ($_SESSION["cat_id"] == 58) {
-        $title = $html->find('.col-lg-6 h1');
-        foreach ($title as $h1) {
-            if (trim($h1->plaintext) == 'ПРОДАНО') {
-                $queryNo2 = "UPDATE `shop_commodity` SET `commodity_visible`='0' WHERE `from_url`='{$new_url}';";
-                mysql_query($queryNo2) or die("error no_nal");
-                return;
-            }
-        }
-    }
-
 
     //------FlFalshion--------------------
     if ($_SESSION["cat_id"] == 46) {
@@ -167,7 +156,6 @@ function gettover($new_url, $count2)
         $pos1 = array_values(array_filter(array_unique(explode(" ", $name))));
         $quantity = count($pos1);
         $cod = $pos1[$quantity - 2] . " " . $pos1[$quantity - 1];
-        echo "<br>Kod - " . $cod . "<br>";
         $name = implode(" ", $pos1);
     }
 
@@ -209,8 +197,6 @@ function gettover($new_url, $count2)
     $price = str_replace("Розница", "", $price);
     $price = str_replace("Стоимость:", "", $price);
     $price = (int)$price;
-
-    echo "<br/>Price: " . $price;
 //=Price_Opt========================================
     $price2 = $html->find($_SESSION["price2"], 0)->plaintext;//
     if ($price2 == "") $price2 = $html->find($_SESSION["price2"], 0)->value;//
@@ -276,7 +262,7 @@ function gettover($new_url, $count2)
             $desc = str_replace($namee . "</p>", "", $desc);
         }
 
-    echo $desc;
+//    echo $desc;
 
     //------Agio-Z--Seventeen--FlFashion----------------
     if (($_SESSION["cat_id"] == 45) || $_SESSION["cat_id"] == 47 || $_SESSION["cat_id"] == 46) {
