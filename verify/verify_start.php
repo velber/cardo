@@ -7,10 +7,10 @@
  */
 ini_set('display_errors', 'on');
 error_reporting(E_ERROR | E_WARNING);
-//mysql_connect('217.12.201.205', 'zoond_make_r', 'makewear12') or die ('no connect');
-//mysql_select_db('zoond_make');
-$connect = mysql_connect('localhost', 'root', '123123q') or die ('no connect');
-mysql_select_db('makewear', $connect);
+mysql_connect('217.12.201.205', 'zoond_make_r', 'makewear12') or die ('no connect');
+mysql_select_db('zoond_make');
+//$connect = mysql_connect('localhost', 'root', '123123q') or die ('no connect');
+//mysql_select_db('makewear', $connect);
 $query = "
 	SELECT * FROM `parser`
 	WHERE `id`='13'
