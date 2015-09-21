@@ -170,7 +170,7 @@ class Cardo
     public function getAllItems()
     {
         foreach ($this->urls as $id => $url) {
-//            if ($id <  15505) continue;
+//            if ($id <  15540) continue;
 //            if (!$this->connectDb->checkActualOptPrices($id, '0')) continue; // якщо злетіли оптові ціни, і рівні "0".
             $this->updated = false;
             $this->result = '';
