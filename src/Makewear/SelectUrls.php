@@ -11,9 +11,9 @@ use PDO;
 
 class SelectUrls
 {
-    const DSN = 'mysql:dbname=zoond_make;host=217.12.201.205';
-    const USER = 'zoond_make_r';
-    const PASSWORD = 'makewear12';
+    const DSN = 'mysql:dbname=zoond_make;host=40.127.188.127';
+    const USER = 'zoond_make';
+    const PASSWORD = '123123q';
 //    const DSN = 'mysql:dbname=makewear;host=127.0.0.1';
 //    const USER = 'root';
 //    const PASSWORD = '123123q';
@@ -160,24 +160,27 @@ FROM  `shop_cardo_sizes` ";
         }
     }
 
-    public function setInterface($count, $step, $updated, $result)
+    public function setInterface($count, $step, $updated, $result, $begin, $hide)
     {
         echo $step . "up";
         echo $count . "cou";
         $a = $count / 100;
         $a2 = round($step / $a, 2);
-        $andSql = '';
+        $andSql = "";
         if ($step == 1) {
-            $andSql .= ', `update_add`=0';
-        }
-        if ($updated) {
-            $andSql .= ', `update_add`=`update_add`+1';
+            $andSql .= ", start_time='{$begin}'";
+            $andSql .= $updated ? ", update_add = 1" : ", update_add = 0";
+            $andSql .= $hide ? ", par_hide = 1" : ", par_hide = 0";
+        } elseif ($updated || $hide) {
+            $andSql .= $updated ? ', `update_add`=`update_add`+1' : '';
+            $andSql .= $hide ? ', `par_hide`=`par_hide`+1' : '';
         }
         $result = $this->dbh->quote($result);
         $sql = "
-UPDATE `parser_interface`
- SET `update_prog`='{$a2}', `check_prog`='{$step}', `text`={$result}{$andSql}
- WHERE `par_id`='5'";
+UPDATE parser_interface
+SET update_prog='{$a2}', check_prog='{$step}', text={$result}{$andSql}
+WHERE par_id='5'
+";
         $this->dbh->query('SET names utf8');
         $stmt = $this->dbh->exec($sql);
         if ($stmt > 0) {
@@ -190,9 +193,10 @@ UPDATE `parser_interface`
     public function setInterfaceComplete($result, $today)
     {
         $sql = "
-UPDATE `parser_interface`
-SET `text`='{$result}', `update_date`='{$today}'
-WHERE `par_id`='5'";
+UPDATE parser_interface
+SET text='{$result}', update_date='{$today}', update_prog='100'
+WHERE par_id='5'
+";
         $this->dbh->query('SET names utf8');
         $this->dbh->exec($sql);
     }
@@ -200,12 +204,12 @@ WHERE `par_id`='5'";
     public function getUpdated()
     {
         $sql = "
-SELECT  update_add
+SELECT  update_add, par_hide
 FROM  `parser_interface`
 WHERE `par_id`='5'";
         $stmt = $this->dbh->query($sql);
         if ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            return $row['update_add'];
+            return array($row['update_add'], $row['par_hide']);
         } else {
             return false;
         }

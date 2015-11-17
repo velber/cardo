@@ -34,9 +34,9 @@ class Cardo
     private $begin;
     private $end;
     public $updated = false;
+    public $hide = false;
     public $count;
     public $result = '';
-    public $hide = 0;
     public $step;
     public $login = false;
 
@@ -170,9 +170,10 @@ class Cardo
     public function getAllItems()
     {
         foreach ($this->urls as $id => $url) {
-//            if ($id <  11103) continue;
+//            if ($id <  16922) continue;
 //            if (!$this->connectDb->checkActualOptPrices($id, '0')) continue; // якщо злетіли оптові ціни, і рівні "0".
             $this->updated = false;
+            $this->hide = false;
             $this->result = '';
             $sizes = $this->getAllSizes($url);
             $priceOpt = $this->getOptPrice();
@@ -217,7 +218,7 @@ class Cardo
                     $result = $this->connectDb->hideItem($id);
                     $this->showHide($result);
                     $this->updated = true;
-                    $this->hide++;
+                    $this->hide = true;
                 } else {
                     echo "<h1>Error, cant find sizes on Cardo HTML page!</h1>";
                     continue;
@@ -226,8 +227,15 @@ class Cardo
             $this->allItems[$id] = $available;
             $this->showInfo($id, $url);
             $this->step = $this->getStep($url);
-            $this->connectDb->setInterface($this->count, $this->step, $this->updated, $this->result);
-//            if ($id > 1419) break;
+            $this->connectDb->setInterface(
+                $this->count,
+                $this->step,
+                $this->updated,
+                $this->result,
+                $this->begin->format('d-m-Y H:i:s'),
+                $this->hide
+            );
+//            if ($id > 3604) break;
         }
         $this->end = new \DateTime('now');
         return $this->allItems;
@@ -314,13 +322,12 @@ class Cardo
     public function showDuration()
     {
         $count = $this->step;
-        $hide = $this->hide;
         $seconds = $this->end->diff($this->begin)->s;
         $minutes = $this->end->diff($this->begin)->i;
         $hours = $this->end->diff($this->begin)->h;
         $begin = $this->begin->format('d-m-Y H:i:s');
         $end = $this->end->format('d-m-Y H:i:s');
-        $updated = $this->connectDb->getUpdated();
+        list($updated, $hide) = $this->connectDb->getUpdated();
         $this->result = <<<FFFFFF
 Всeго товарoв прoeeрено - $count<br>
 Обновлено - $updated<br>
