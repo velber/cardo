@@ -11,12 +11,9 @@ use PDO;
 
 class SelectUrls
 {
-    const DSN = 'mysql:dbname=zoond_make;host=40.127.188.127';
-    const USER = 'zoond_make';
-    const PASSWORD = '123123q';
-//    const DSN = 'mysql:dbname=makewear;host=127.0.0.1';
-//    const USER = 'root';
-//    const PASSWORD = '123123q';
+    const DSN = 'mysql:dbname=******;host=******';
+    const USER = '*******';
+    const PASSWORD = '******';
     const MSG_SUCCESS = "Не отображать!";
     const MSG_NOT_SUCCESS = "Не удалось скрить товaр!";
     const MSG_SUCC_SIZE = "Размер обновился!";
