@@ -1,3 +1,5 @@
+HTML pages parser, based on PHP-Selenium.
+=========================
 PHP-SeleniumClient
 =========================
 
